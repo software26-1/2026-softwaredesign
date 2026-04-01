@@ -81,3 +81,76 @@ com.school.management
 - `JWT_SECRET`: JWT 서명 키
 - AWS 자격증명 (S3, SES 사용 시)
 - Firebase 서비스 계정 키 (FCM 사용 시)
+
+=== API 명세서 ===
+
+Base URL: /api/v1 (예상)
+공통 응답: ApiResponse<T> { data, message, status }
+
+--- 인증 ---
+POST   /auth/login              로그인 (모든 사용자)
+POST   /auth/logout             로그아웃
+POST   /auth/refresh            토큰 재발급
+POST   /auth/password/reset     비밀번호 초기화 요청
+
+--- 사용자 관리 (ADMIN) ---
+GET    /users/{id}              사용자 상세 조회
+PATCH  /users/{id}/role         역할 변경
+
+--- 학생 관리 ---
+GET    /students                학생 목록 조회 (grade, class, name, page, size 필터) [교사]
+GET    /students/{id}           학생 상세 조회 [교사]
+POST   /students                학생 등록 [교사]
+PUT    /students/{id}           학생 수정 [교사]
+DELETE /students/{id}           학생 삭제 [ADMIN]
+
+--- 학부모 매핑 ---
+GET    /students/{id}/parents   학부모 목록 조회 (학생별) [교사]
+POST   /parent-student          학부모-학생 매핑 추가
+DELETE /parent-student/{id}     학부모-학생 매핑 삭제
+
+--- 교과목 ---
+GET    /subjects                교과목 목록 조회
+POST   /subjects                교과목 등록
+PUT    /subjects/{id}           교과목 수정
+DELETE /subjects/{id}           교과목 삭제
+
+--- 성적 ---
+GET    /students/{id}/grades    학생 성적 조회
+POST   /grades                  성적 입력 [교사]
+PUT    /grades/{id}             성적 수정 [교사]
+
+--- 학기 요약 ---
+GET    /students/{id}/semester-summary   학기별 성적 요약 조회
+
+--- 출결 ---
+GET    /students/{id}/attendance         출결 내역 조회
+GET    /students/{id}/attendance/summary 출결 요약
+POST   /attendance                       출결 등록 [교사]
+
+--- 학생부 ---
+GET    /students/{id}/records            학생부 조회
+POST   /students/{id}/records            학생부 항목 추가 [교사]
+
+--- 피드백 ---
+POST   /feedbacks                        피드백 작성 [교사]
+PATCH  /feedbacks/{id}/visibility        피드백 공개 설정 변경
+
+--- 상담 ---
+GET    /counselings                      상담 내역 조회
+GET    /counselings/search               전체 상담 검색 (교사 간 공유)
+POST   /counselings                      상담 등록 [교사]
+
+--- 통합 검색 ---
+GET    /search                           학생별 통합 검색
+
+--- 알림 ---
+GET    /notifications                    알림 목록 조회
+PATCH  /notifications/read               알림 읽음 처리
+GET    /notifications/settings           알림 설정 조회
+PUT    /notifications/settings           알림 설정 변경
+
+--- 보고서 ---
+GET    /reports                          보고서 목록 조회
+POST   /reports/grade-analysis           성적 분석 보고서 생성
+GET    /reports/{id}/download            보고서 다운로드
