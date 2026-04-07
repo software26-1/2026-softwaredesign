@@ -38,13 +38,13 @@ public class ClassStatistic extends BaseEntity {
     @Column(nullable = false, precision = 5, scale = 2)
     private BigDecimal standardDev;
 
-    @Column(nullable = false, precision = 5, scale = 2)
+    @Column(name = "ratio_a", nullable = false, precision = 5, scale = 2)
     private BigDecimal ratioA;
 
-    @Column(nullable = false, precision = 5, scale = 2)
+    @Column(name = "ratio_b", nullable = false, precision = 5, scale = 2)
     private BigDecimal ratioB;
 
-    @Column(nullable = false, precision = 5, scale = 2)
+    @Column(name = "ratio_c", nullable = false, precision = 5, scale = 2)
     private BigDecimal ratioC;
 
     public ClassStatistic(User teacher, Subject subject, String semester,
