@@ -40,7 +40,7 @@ public class StudentService {
 
     // 학생 등록
     @Transactional
-    public StudentResponse createStudent9(StudentCreateRequest request) {
+    public StudentResponse createStudent(StudentCreateRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
