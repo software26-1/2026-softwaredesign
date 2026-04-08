@@ -75,8 +75,9 @@ public class GradeController {
     @GetMapping("/students/{studentId}/radar")
     @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN', 'STUDENT', 'PARENT')")
     public ResponseEntity<ApiResponse<List<GradeRadarResponse>>> getStudentRadarGrades(
-            @PathVariable Long studentId) {
+            @PathVariable Long studentId,
+            @RequestParam String semester) {
         return ResponseEntity.ok(ApiResponse.success("레이더 차트 성적 조회 성공",
-                gradeService.getStudentRadarGrades(studentId)));
+                gradeService.getStudentRadarGrades(studentId, semester)));
     }
 }

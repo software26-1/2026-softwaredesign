@@ -11,6 +11,8 @@ import com.school.management.domain.subject.repository.GradeRepository;
 import com.school.management.domain.subject.repository.SemesterSummaryRepository;
 import com.school.management.domain.subject.repository.SubjectRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ public class GradeService {
     private final SubjectRepository subjectRepository;
 
     @Transactional
+    @CacheEvict(value = "grades:radar", allEntries = true)
     public void registerGrade(Long studentId, Long classStatisticId, BigDecimal rawScore) {
 
         Student student = studentRepository.findByIdAndIsDeletedFalse(studentId)
@@ -141,6 +144,7 @@ public class GradeService {
 
     // 성적 수정 — 원점수 변경 시 성취도·석차등급·학기요약 자동 재계산
     @Transactional
+    @CacheEvict(value = "grades:radar", allEntries = true)
     public void updateGrade(Long gradeId, BigDecimal rawScore) {
         Grade grade = gradeRepository.findById(gradeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성적입니다."));
@@ -158,6 +162,7 @@ public class GradeService {
 
     // 성적 삭제 (soft delete) — 삭제 후 학기 요약 재계산
     @Transactional
+    @CacheEvict(value = "grades:radar", allEntries = true)
     public void deleteGrade(Long gradeId) {
         Grade grade = gradeRepository.findById(gradeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성적입니다."));
@@ -178,10 +183,11 @@ public class GradeService {
         return semesterSummaryRepository.findAllByStudentIdAndIsDeletedFalse(studentId);
     }
 
-    // 레이더 차트용 과목별 성적 조회
+    // 레이더 차트용 과목별 성적 조회 (학기별, Redis 캐싱)
     @Transactional(readOnly = true)
-    public List<GradeRadarResponse> getStudentRadarGrades(Long studentId) {
-        return gradeRepository.findAllByStudentIdAndIsDeletedFalse(studentId)
+    @Cacheable(value = "grades:radar", key = "#studentId + ':' + #semester")
+    public List<GradeRadarResponse> getStudentRadarGrades(Long studentId, String semester) {
+        return gradeRepository.findAllByStudentIdAndSemesterAndIsDeletedFalse(studentId, semester)
                 .stream()
                 .map(GradeRadarResponse::new)
                 .toList();
