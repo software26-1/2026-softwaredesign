@@ -58,6 +58,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> refresh(
             @Valid @RequestBody TokenRefreshRequest request) {
         LoginResponse response = authService.refresh(request);
+
         return ResponseEntity.ok(ApiResponse.success("토큰 재발급 성공", response));
     }
 
