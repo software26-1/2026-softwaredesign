@@ -5,6 +5,7 @@ import com.school.management.domain.student.repository.StudentRepository;
 import com.school.management.domain.subject.entity.ClassStatistic;
 import com.school.management.domain.subject.entity.Grade;
 import com.school.management.domain.subject.entity.SemesterSummary;
+import com.school.management.domain.subject.dto.GradeRadarResponse;
 import com.school.management.domain.subject.repository.ClassStatisticRepository;
 import com.school.management.domain.subject.repository.GradeRepository;
 import com.school.management.domain.subject.repository.SemesterSummaryRepository;
@@ -175,5 +176,14 @@ public class GradeService {
     @Transactional(readOnly = true)
     public List<SemesterSummary> getStudentSemesterSummaries(Long studentId) {
         return semesterSummaryRepository.findAllByStudentIdAndIsDeletedFalse(studentId);
+    }
+
+    // 레이더 차트용 과목별 성적 조회
+    @Transactional(readOnly = true)
+    public List<GradeRadarResponse> getStudentRadarGrades(Long studentId) {
+        return gradeRepository.findAllByStudentIdAndIsDeletedFalse(studentId)
+                .stream()
+                .map(GradeRadarResponse::new)
+                .toList();
     }
 }

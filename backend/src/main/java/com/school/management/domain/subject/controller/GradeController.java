@@ -1,6 +1,7 @@
 package com.school.management.domain.subject.controller;
 
 import com.school.management.domain.subject.dto.GradeCreateRequest;
+import com.school.management.domain.subject.dto.GradeRadarResponse;
 import com.school.management.domain.subject.dto.GradeUpdateRequest;
 import com.school.management.domain.subject.entity.Grade;
 import com.school.management.domain.subject.entity.SemesterSummary;
@@ -68,5 +69,14 @@ public class GradeController {
             @PathVariable Long studentId) {
         return ResponseEntity.ok(ApiResponse.success("학기 요약 조회 성공",
                 gradeService.getStudentSemesterSummaries(studentId)));
+    }
+
+    // 레이더 차트용 과목별 성적 조회
+    @GetMapping("/students/{studentId}/radar")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN', 'STUDENT', 'PARENT')")
+    public ResponseEntity<ApiResponse<List<GradeRadarResponse>>> getStudentRadarGrades(
+            @PathVariable Long studentId) {
+        return ResponseEntity.ok(ApiResponse.success("레이더 차트 성적 조회 성공",
+                gradeService.getStudentRadarGrades(studentId)));
     }
 }
