@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Design prototype & prompts (not part of source)
+Stuent_record_system.html
+intellij-prompt.md
